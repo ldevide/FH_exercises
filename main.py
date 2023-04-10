@@ -4,121 +4,117 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-# exercise 2.1
-def count_integer(numbers, integer):
-    result = 0
-    for e in numbers:
-        if integer == e:
-            result = result + 1
-    if result == 0:
+# exercise 3.1
+def count_vowels(text):
+    if type(text) != str:
         return 42
+    result = 0
+    vowels = 'AaEeIiOoUu'
+    for letter in text:
+        if letter in vowels:
+            result = result + 1
     return result
 
-# exercise 2.2
-def list_func(numbers, integer):
-    result = False
-    new_numbers = []
-    for e in numbers:
-        if e == integer:
-            result = True
-            new_numbers.append(6)
-        else: new_numbers.append(e)
-    unreversed = new_numbers.copy()
-    new_numbers.reverse()
-    if not result:
-        empty_list = []
-        return empty_list
-    else:
-        #print("Original list: ", numbers, "Unreversed list: ", unreversed, "Reversed list: ", new_numbers)
-        print(new_numbers)
-    return unreversed
+# exercise 3.2
+def hamming(text1, text2):
+    if len(text1) != len(text2):
+        return 0
+    result = 0
+    for index in range(len(text1)):
+        if text1[index] != text2[index]:
+            result = result + 1
+    return result
 
-# exercise 2.3
-def compare_lists(list1, list2):
-    list = []
-    for e in list1:
-        if e in list2:
-            list.append(e)
-    return list
+# exercise 3.3
+class Vehicle():
+    def __init__(self, color, fuel_type):
+        self.color = color
+        self.fuel_type = fuel_type
+    def __str__(self):
+        return f'Color: {self.color}, Fuel Type: {self.fuel_type}'
 
-# exercise 2.4
-def remove_duplicates(lst):
-   list = []
-   for e in lst:
-       if e not in list:
-           list.append(e)
-   return list
+class Car(Vehicle):
+    def __init__(self, color, fuel_type, doors):
+        Vehicle.__init__(self, color, fuel_type)
+        self.doors = doors
+    def __str__(self):
+        return Vehicle.__str__(self)+f', Doors: {self.doors}'
 
-# exercise 2.5
-def dict_func(dictionary):
-    type = "unknown type"
-    if "Type" in dictionary:
-        type = dictionary["Type"]
-    brand = "unknown brand"
-    if "Brand" in dictionary:
-        brand = dictionary["Brand"]
-    price = "unknown price"
-    if "Price" in dictionary:
-        price = dictionary["Price"]
-    print(f'You have a {type} from {brand} that costs {price}.')
-    dictionary["OS"] = "Linux"
-    print(dictionary)
-    return dictionary
+class Bus(Vehicle):
+    def __init__(self, color, fuel_type, passengers):
+        Vehicle.__init__(self, color, fuel_type)
+        self.passengers = passengers
+
+    def __str__(self):
+        return Vehicle.__str__(self)+f', Passengers: {self.passengers}'
+
+# exercise 3.4
+class Book():
+    def __init__(self, name, author):
+        self.name = name
+        self.author = author
+    def __str__(self):
+        return f'{self.name}, {self.author}'
+
+# exercise 3.5
+class BookShelf():
+    def __init__(self):
+        self.books = []
+    def add_book_list(self,books):
+        for book in books:
+            if type(book) == Book:
+                self.books.append(book)
+
+    def books_by_author(self, author):
+        result = []
+        for book in self.books:
+            if author == book.author:
+               result.append(book.name)
+        return result
+
+    def get_books(self):
+        result = []
+        for book in self.books:
+            result.append(book.name)
+        return result
+
+    def clear_shelf(self):
+        self.books = []
 
 
 if __name__ == '__main__':
     exercise = input("exercise nr: ")
     if exercise == '1':
         print("exercise 1:")
-        numbers = []
-        s = input("enter a number or nothing: ")
-        while s != "":
-            numbers.append(int(s))
-            s = input("enter a number or nothing: ")
-        integer = int(input("enter number to search: "))
-        print(count_integer(numbers, integer))
+        text = input("enter a string: ")
+        print(count_vowels(text))
+        number = int(input("enter a number: "))
+        print(count_vowels(number))
     elif exercise == '2':
         print("exercise 2:")
-        numbers = []
-        s = input("enter a number or nothing: ")
-        while s != "":
-            numbers.append(int(s))
-            s = input("enter a number or nothing: ")
-        integer = int(input("enter number to be replaced by 6: "))
-        print(list_func(numbers, integer))
+        text1 = input("enter a string: ")
+        text2 = input("enter a string: ")
+        print(hamming(text1, text2))
     elif exercise == '3':
         print("exercise 3:")
-        list_one = []
-        list_two = []
-        s = input("first list - enter a string or nothing: ")
-        while s != "":
-            list_one.append(s)
-            s = input("first list - enter a string or nothing: ")
-        s = input("second list - enter a string or nothing: ")
-        while s != "":
-            list_two.append(s)
-            s = input("second list - enter a string or nothing: ")
-        print(compare_lists(list_one, list_two))
+        my_car = Car("red", "petrol", 5)
+        my_bus = Bus("blue", "diesel", 42)
+        print(my_car)
+        print(my_bus)
     elif exercise == '4':
         print("exercise 4:")
-        lst = []
-        s = input("enter a string or nothing: ")
-        while s != "":
-            lst.append(s)
-            s = input("enter a string or nothing: ")
-        print(remove_duplicates(lst))
+        my_book = Book("The Hitchhiker's Guide to the Galaxy", "Douglas Adams")
+        print(my_book)
     elif exercise == '5':
         print("exercise 5:")
-        dictionary = {}
-        type = input("input type or nothing: ")
-        if type != "":
-            dictionary["Type"] = type
-        brand = input("input brand or nothing: ")
-        if brand != "":
-            dictionary["Brand"] = brand
-        price = input("input price or nothing: ")
-        if price != "":
-            dictionary["Price"] = int(price)
-        dict_func(dictionary)
+        my_shelf = BookShelf()
+        my_shelf.add_book_list([Book("AAA", "BB CC"), Book("DDD", "EE FF"), Book("GGG", "EE FF"), Car("red", "petrol", 5)])
+        print(my_shelf.books_by_author("EE FF"))
+        print(my_shelf.get_books())
+        my_shelf.add_book_list([Book("HHH", "II JJ")])
+        print(my_shelf.get_books())
+        my_shelf.clear_shelf()
+        print(my_shelf.books_by_author("EE FF"))
+        print(my_shelf.get_books())
     else:
         print(f"unknown exercise {exercise}")
