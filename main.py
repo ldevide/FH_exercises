@@ -1,296 +1,123 @@
-"""
-Exercise template for exercise 04 linked lists
-"""
-
-
-# singly linked list
-# node class of the singly linked list
-class SLLNode:
-    def __init__(self, data):
-        self.data = data
-        self.next = None  # pointer to the next node
-
-    def __str__(self):
-        return str(self.data)
-
-
-# Singly linked list class
-class SinglyLinkedList:
-    def __init__(self):
-        self.head = None
-        self.size = 0
-
-    def append(self, data):
-        # Create the new node the pointer is set to None through the constructor of the SLLNode class
-        node = SLLNode(data)
-        if self.head is None:  # if the list is empty, the new node is the head
-            self.head = node
-        else:  # if it is not empty, we need to find the last node and append the new node
-            current = self.head
-            while current.next is not None:
-                current = current.next
-            # set the pointer of the last node to the new node
-            current.next = node
-        self.size += 1  # increase the size of the list
-
-    def get_size(self):
-        return self.size
-
-    # string representation of the linked list
-    def __str__(self):
-        return str([node for node in self])
-
-    # iteration function without this function we can not iterate over the list
-    def __iter__(self):
-        current = self.head
-        while current:
-            value = current.data
-            current = current.next
-            yield value
-
-    """
-    Exercise part 1,2,3,4
-
-    Implement the given methods below according to the requirements in the exercise sheet.
-    Make sure to return the correct values.
-    """
-
-    def insert(self, prev_node_data, new_node_data):
-        current = self.head
-        if current == None:
-            return False
-        if prev_node_data == current.data:
-            node = SLLNode(new_node_data)
-            node.next = current.next
-            current.next = node
-            self.size += 1
-            return True
-        while current.next is not None:
-            current = current.next
-            if prev_node_data == current.data:
-                node = SLLNode(new_node_data)
-                node.next = current.next
-                current.next = node
-                self.size += 1
-                return True
-        return False
-
-
-    def clear(self):
-        self.head = None
-        self.size = 0
-        return
-
-    def get_data(self, data):
-        current = self.head
-        if current == None:
-            return False
-        if data == current.data:
-            return data
-        while current.next is not None:
-            current = current.next
-            if data == current.data:
-                return data
-        return False
-
-    def delete(self, data):
-        current = self.head
-        if current == None:
-            return
-        if data == current.data:
-            self.head = current.next
-            self.size -= 1
-            return
-        while current.next is not None:
-            previous = current
-            current = current.next
-            if data == current.data:
-                previous.next = current.next
-                self.size -= 1
-                return
+# exercise 5.1
+def selection_sort(numbers: list):
+    for fill_slot in range(len(numbers) - 1, -1, -1):
+        position_of_max = fill_slot
+        for location in range(0, fill_slot):
+            if numbers[location] > numbers[position_of_max]:
+                position_of_max = location
+        temp = numbers[fill_slot]
+        numbers[fill_slot] = numbers[position_of_max]
+        numbers[position_of_max] = temp
+    return numbers
 
 
 
-"""
-Exercise part 5
-Implement a doubly linked list according to the exercise sheet.
-You can copy the code from the singly linked list and modify it.
-"""
+# exercise 5.2
+# text: sorted list of words
+# target: word to search
+# return: target if found, otherwise None
+def binary_search(text: list, target: str):
+    first = 0
+    last = len(text)
+    if last == 0:
+        return None
+    while first != last:
+        position = (first + last) // 2
+
+        if text[position] == target:
+            return target
+        if text[position] > target:
+            last = position - 1
+        else:
+            first = position + 1
+    if first < len(text) and text[first] == target:
+        return target
+
+    return None
+
+class HashTable:
+    def __init__(self, size):
+        self.size = size
+        self.slots = [[]] * self.size
 
 
-class DLLNode:
-    """Implement the node of the doubly linked list here"""
-    def __init__(self, data):
-        self.data = data
-        self.next = None  # pointer to the next node
-        self.previous = None  # pointer to the previous node
-class DoublyLinkedList:
-    """Implement the doubly linked list and its methods here"""
+    def __my_hash(self, key):
+       if type(key) == str:
+           return len(key) % self.size
+       elif type(key) == int:
+           return key % self.size
+       else: # unknown type -> use slot 0
+           return 0
 
-    def __init__(self):
-        self.head = None
-        self.tail = None
-        self.size = 0
+    def getIndex(self, lst, key):
+        index = 0
+        while index < len(lst):
+            if lst[index][0] == key:
+                return index
+            index = index + 1
+        return None
+    def put(self, key, data):
+        bucket_index = self.__my_hash(key)
+        bucket = self.slots[bucket_index]
+        key_index = self.getIndex(bucket, key)
+        if key_index == None:
+            bucket.append([key, data])
+        else:
+            bucket[key_index][1] = data
 
-    def append(self, data):
-        # Create the new node the pointer is set to None through the constructor of the DLLNode class
-        node = DLLNode(data)
-        if self.head is None:  # if the list is empty, the new node is the head
-            self.head = node
-            self.tail = node
-        else:  # if it is not empty, we need to find the last node and append the new node
-            # current = self.head
-            # while current.next is not None:
-                # current = current.next
-            # set the pointer of the last node to the new node
-            self.tail.next = node
-            node.previous = self.tail
-        self.size += 1  # increase the size of the list
+    def get(self, key):
+        bucket_index = self.__my_hash(key)
+        bucket = self.slots[bucket_index]
+        for element in bucket:
+            if element[0] == key:
+                return element[1]
+        result = None
 
-    def get_size(self):
-        return self.size
-
-    # string representation of the linked list
-    def __str__(self):
-        return str([node for node in self])
-
-    # iteration function without this function we can not iterate over the list
-    def __iter__(self):
-        current = self.head
-        while current:
-            value = current.data
-            current = current.next
-            yield value
-
-    def insert(self, prev_node_data, new_node_data):
-        current = self.head
-        if current == None:
-            return False
-        if prev_node_data == current.data:
-            node = DLLNode(new_node_data)
-            node.next = current.next
-            current.next = node
-            node.previous = current
-            self.size += 1
-            return True
-        while current.next is not None:
-            current = current.next
-            if prev_node_data == current.data:
-                node = DLLNode(new_node_data)
-                node.next = current.next
-                current.next = node
-                node.previous = current
-                self.size += 1
-                return True
-        return False
-
-
-    def clear(self):
-        self.head = None
-        self.size = 0
-        return
-
-    def get_data(self, data):
-        current = self.head
-        if current == None:
-            return False
-        if data == current.data:
-            return data
-        while current.next is not None:
-            current = current.next
-            if data == current.data:
-                return data
-        return False
-
-    def delete(self, data):
-        current = self.head
-        if current == None:
-            return
-        if data == current.data:
-            self.head = current.next
-            if current.next:
-                current.next.previous = None
-            self.size -= 1
-            return
-        if data == self.tail.data:
-            self.tail = self.tail.previous
-            self.tail.next = None
-            self.size -= 1
-            return
-        while current.next is not None:
-            current = current.next
-            if data == current.data:
-                current.previous.next = current.next
-                current.next.previous = current.previous
-                self.size -= 1
-                return
-
-"""
-Exercise Part 5 and 7:
-Complete the classes below to implement a stack and queue data structure. You are free to use built-in
-methods but you have to complete all methods below. Always return the correct data type according
-to the exercise sheet
-"""
-
-
-class MyStack:
-
-    def push(self, element):
-        return
-
-    def pop(self):
-        return
-
-    def top(self):
-        return
-
-    def size(self):
-        return
-
-
-class MyQueue:
-
-    def push(self, element):
-        return
-
-    def pop(self):
-        return
-
-    def show_left(self):
-        return
-
-    def show_right(self):
-        return
-
-    def size(self):
-        return
-def test(ll):
-        print(f'clear() empty list: {ll.clear()} - expected: None')
-        print(f'get_data() of empty list: {ll.get_data(5)} - expected: False')
-        print(f'insert() into empty list: {ll.insert(5, "Hase")} - expected: False')
-        print(f'delete() from empty list: {ll.delete(5)} - expected: None')
-        # test with one element in list
-        ll.append(1997)
-        print(f'get_data() of non existing data: {ll.get_data(5)}, {ll.get_size()} - expected: False, 1')
-        print(f'insert() after non existing data: {ll.insert(5, "Hase")}, {ll.get_size()} - expected: False, 1')
-        print(f'delete() non existing data: {ll.delete(5)}, {ll.get_size()} - expected: None, 1')
-        # test with existing data
-        print(f'get_data() of existing data: {ll.get_data(1997)}, {ll.get_size()} - expected: 1997, 1')
-        print(f'insert() after existing data: {ll.insert(1997, "Hase")}, {ll.get_size()} - expected: True, 2')
-        print(f'delete() existing data: {ll.delete(1997)}, {ll.get_size()} - expected: None, 1')
-        print(f'delete() existing data: {ll.delete("Hase")}, {ll.get_size()} - expected: None, 0')
-        ll.append("Toast")
-        ll.append("Ham")
-        print(f'insert() after existing data: {ll.insert("Toast", "Cheese")}, {ll.get_size()} - expected: True, 3')
-        print(ll)
-        print(f'clear() empty list: {ll.clear()}, {ll.get_size()} - expected: None, 0')
-        print(ll)
 
 if __name__ == '__main__':
     exercise = input("exercise nr: ")
     if exercise == '1':
         print("exercise 1:")
-        test(SinglyLinkedList())
-    if exercise == '5':
-        print("exercise 5:")
-        test(DoublyLinkedList())
+        lst = [31, 46, 23, 8, 12, 7, 44, 63, 82]
+        print(lst)
+        selection_sort(lst)
+        print(lst)
+    elif exercise == '2':
+        print("exercise 2:")
+        text = []
+        print(binary_search(text, "rose"))
+        text = ["rose"]
+        print(binary_search(text, "rose"))
+        print(binary_search(text, "tulip"))
+        text = ["rose", "tulip"]
+        print(binary_search(text, "rose"))
+        print(binary_search(text, "tulip"))
+        print(binary_search(text, "daisy"))
+        text = ["daisy", "rose", "tulip"]
+        print(binary_search(text, "rose"))
+        print(binary_search(text, "tulip"))
+        print(binary_search(text, "daisy"))
+        print(binary_search(text, "daffodil"))
+        text = ["daffodil", "daisy", "rose", "tulip"]
+        print(binary_search(text, "rose"))
+        print(binary_search(text, "tulip"))
+        print(binary_search(text, "daisy"))
+        print(binary_search(text, "daffodil"))
+        print(binary_search(text, "poppy"))
+    elif exercise == '3':
+        print("exercise 3:")
+        hashTable = HashTable(4)
+        print(hashTable.get("Elefant"), "expected: None")
+        print(hashTable.get(1997), "expected: None")
+        hashTable.put(23, 66)
+        print(hashTable.get("Elefant"), "expected: None")
+        print(hashTable.get(1997), "expected: None")
+        print(hashTable.get(23), "expected: 66")
+        hashTable.put("Elefant", 4)
+        print(hashTable.get("Elefant"), "expected: 4")
+        print(hashTable.get(1997), "expected: None")
+        print(hashTable.get(23), "expected: 66")
+    else:
+        print(f"unknown exercise {exercise}")
+
+
